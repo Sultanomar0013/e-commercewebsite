@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import{ Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import Layout from '../Layout';
-import { showError, showLoading} from '../../utils/messages'
+import { showError, showLoading } from '../../utils/messages';
 import { register } from '../../api/apiAuth';
+import { isAuthenticated } from '../../utils/auth'
 
 const Register = () => {
     const [values, setValues] = useState({
@@ -17,39 +18,38 @@ const Register = () => {
 
     const { name, email, password, success, error, loading, disabled } = values;
 
-    const handleChange = e =>{
+    const handleChange = e => {
         setValues({
             ...values,
-            error:false,
+            error: false,
             [e.target.name]: e.target.value
         })
     }
 
-    const handleSubmit = e =>{
+    const handleSubmit = e => {
         e.preventDefault();
-        setValues({...values, error: false, loading:true, disabled:true});
+        setValues({ ...values, error: false, loading: true, disabled: true });
 
         register({ name, email, password })
-        .then(response =>{
-            setValues({
-                name: '',
-                email: '',
-                password: '',
-                success:true,
-                disabled:false,
-                loading:false
+            .then(response => {
+                setValues({
+                    name: '',
+                    email: '',
+                    password: '',
+                    success: true,
+                    disabled: false,
+                    loading: false
+                })
             })
-        })
-        .catch (err=>{
-            let errMsg = 'Something Went Wrong!';
-            if(err.response){
-                errMsg = err.response.data;
-            }
-            else{
-                errMsg = 'Something Went Wrong!';
-            }
-            setValues({...values, error: errMsg, disabled: false, loading:false})
-        })
+            .catch(err => {
+                let errMsg = 'Something went wrong!';
+                if (err.response) {
+                    errMsg = err.response.data;
+                } else {
+                    errMsg = 'Something went wrong!';
+                }
+                setValues({ ...values, error: errMsg, disabled: false, loading: false })
+            })
     }
 
     const signUpForm = () => (
@@ -73,19 +73,20 @@ const Register = () => {
         </form>
     );
 
-    const showSuccess = () =>{
-        if (success) return(  
+    const showSuccess = () => {
+        if (success) return (
             <div className="alert alert-primary">
-                New Account Created.Please <Link to="/login">Login</Link>.
+                New Account Created. Please <Link to="/login">Login</Link>.
             </div>
         )
     }
 
     return (
         <Layout title="Register" className="container col-md-8 offset-md-2">
+            {isAuthenticated() ? <Redirect to="/" />: ""}
             {showSuccess()}
             {showLoading(loading)}
-            {showError(error,error)}
+            {showError(error, error)}
             <h3>Register Here,</h3>
             <hr />
             {signUpForm()}

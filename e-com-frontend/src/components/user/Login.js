@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import {Redirect} from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import Layout from '../Layout';
-import { showError, showLoading} from '../../utils/messages'
+import { showError, showLoading } from '../../utils/messages';
 import { login } from '../../api/apiAuth';
-import { authenticate } from '../../utils/auth'
+import { authenticate, isAuthenticated, userInfo } from '../../utils/auth';
 
 const Login = () => {
     const [values, setValues] = useState({
@@ -17,42 +17,41 @@ const Login = () => {
 
     const { email, password, loading, error, redirect, disabled } = values;
 
-    const handleChange = e =>{
+
+    const handleChange = e => {
         setValues({
             ...values,
-            error:false,
+            error: false,
             [e.target.name]: e.target.value
         })
     }
 
-    const handleSubmit = e =>{
+    const handleSubmit = e => {
         e.preventDefault();
-        setValues({...values, error: false, loading:true, disabled:true});
+        setValues({ ...values, error: false, loading: true, disabled: true });
 
         login({ email, password })
-        .then(response =>{
-            authenticate(response.data.token, ()=>{
-                setValues({
-                    email: '',
-                    password: '',
-                    success:true,
-                    disabled:false,
-                    loading:false,
-                    redirect:true
+            .then(response => {
+                authenticate(response.data.token, () => {
+                    setValues({
+                        email: '',
+                        password: '',
+                        success: true,
+                        disabled: false,
+                        loading: false,
+                        redirect: true
+                    })
                 })
             })
-            
-        })
-        .catch (err=>{
-            let errMsg = 'Something Went Wrong!';
-            if(err.response){
-                errMsg = err.response.data;
-            }
-            else{
-                errMsg = 'Something Went Wrongs!';
-            }
-            setValues({...values, error: errMsg, disabled: false, loading:false, redirect:true})
-        })
+            .catch(err => {
+                let errMsg = 'Something went wrong!';
+                if (err.response) {
+                    errMsg = err.response.data;
+                } else {
+                    errMsg = 'Something went wrong!';
+                }
+                setValues({ ...values, error: errMsg, disabled: false, loading: false })
+            })
     }
 
 
@@ -65,20 +64,22 @@ const Login = () => {
             </div>
             <div className="form-group">
                 <label className="text-muted">Password:</label>
-                <input name="password" type="password" className="form-control"
-                    value={password} required onChange={handleChange} />
-            </div> 
+                <input name="password" type="password" onChange={handleChange} className="form-control"
+                    value={password} required />
+            </div>
             <button type="submit" className="btn btn-outline-primary" disabled={disabled}>Login</button>
         </form>
     );
-    const redirectUser=()=>{
-        if(redirect) return <Redirect to="/"/>
+
+    const redirectUser = () => {
+        if (redirect) return <Redirect to={`${userInfo().role}/dashboard`} />
+        if(isAuthenticated()) return <Redirect to="/" />
     }
     return (
         <Layout title="Login" className="container col-md-8 offset-md-2">
             {redirectUser()}
             {showLoading(loading)}
-            {showError(error,error)}
+            {showError(error, error)}
             <h3>Login Here,</h3>
             <hr />
             {signInForm()}

@@ -1,9 +1,9 @@
 import Layout from '../Layout';
 
-const Home = () =>{
-    return(
-        <Layout title="Home Page" className="container">
-            <h1>this is home</h1>
+const Home = () => {
+    return (
+        <Layout title="Home Page" className="container-fluid">
+            <h1>I am homepage</h1>
         </Layout>
     )
 }
