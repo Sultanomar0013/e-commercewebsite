@@ -8,14 +8,22 @@ const isActive = (history, path)=> {
     }
 }
 
-const Menu = ({ history}) =>{
+const Menu = ({ history }) =>{
     return(
         <nav className='navbar navbar-dark bg-dark'>
             <ul className="nav nav-tabs">
                 <li className="nav-item">
-                    <Link className="nav-link" to="/">Home</Link>
+                    <Link className="nav-link" style={isActive (history,'/')} to="/">Home</Link>
                 </li>
                 <li className="nav-item">
-                    <Link className="nav-link" to="/login">Login</Link>
+                    <Link className="nav-link" style={isActive (history,'/login')} to="/login">Login</Link>
                 </li>
-                <li classNa
+                <li className="nav-item">
+                    <Link className="nav-link" style={isActive (history,'/register')} to="/register">Register</Link>
+                </li>
+            </ul>
+        </nav>
+    )
+}
+
+export default withRouter(Menu);
