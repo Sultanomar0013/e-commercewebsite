@@ -73,7 +73,7 @@ const Login = () => {
 
     const redirectUser = () => {
         if (redirect) return <Redirect to={`${userInfo().role}/dashboard`} />
-        if(isAuthenticated()) return <Redirect to="/" />
+        if (isAuthenticated()) return <Redirect to="/" />
     }
     return (
         <Layout title="Login" className="container col-md-8 offset-md-2">

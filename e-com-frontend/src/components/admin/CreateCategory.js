@@ -3,14 +3,14 @@ import Layout from '../Layout';
 import { showError, showSuccess, showLoading } from '../../utils/messages';
 import { Link } from 'react-router-dom';
 import { createCategory } from '../../api/apiAdmin';
-import {userInfo} from '../../utils/auth'
+import { userInfo } from '../../utils/auth';
 
 const CreateCategory = () => {
     const [values, setValues] = useState({
         name: '',
         error: false,
         success: false,
-        loading:false
+        loading: false
     });
 
     const { name, error, success, loading } = values;
@@ -18,32 +18,33 @@ const CreateCategory = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         setValues({
-            ...values, loading: true, error: false, success:false
-        })
-        const {token}=userInfo();
-        createCategory(token, {name: name })
-        .then(response => {
-            setValues({
-                ...values,
-                error: false,
-                success: true,
-                loading: false
+            ...values, loading: true, error: false, success: false
+        });
+
+        const { token } = userInfo();
+        createCategory(token, { name: name })
+            .then(response => {
+                setValues({
+                    ...values,
+                    error: false,
+                    success: true,
+                    loading: false
+                })
             })
-        })
-        .catch(err=>{
-            if(err.response) setValues({
-                ...values,
-                success: false,
-                error: err.response.data,
-                loading: false
+            .catch(err => {
+                if (err.response) setValues({
+                    ...values,
+                    success: false,
+                    error: err.response.data,
+                    loading: false
+                })
+                else setValues({
+                    ...values,
+                    success: false,
+                    error: "Something went wrong!",
+                    loading: false
+                })
             })
-            else setValues({
-                ...values,
-                success: false,
-                error: "Something wet wrong in category!",
-                loading: false
-            })
-        })
     }
 
     const handleChange = (e) => {
@@ -78,7 +79,7 @@ const CreateCategory = () => {
 
 
     return (
-        <Layout title="Add a new category" description="Ready to add a new category?">
+        <Layout title="Add a new category">
             <div className="row">
                 <div className="col-md-8 offset-md-2">
                     {showLoading(loading)}
